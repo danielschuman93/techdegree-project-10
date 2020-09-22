@@ -5,11 +5,7 @@ const Course = require('../models').Course;
 const bcryptjs = require('bcryptjs');
 const auth = require('basic-auth');
 const { body, validationResult } = require('express-validator');
-const cors = require('cors');
 
-
-// Setup CORS
-router.use(cors());
 
 /* Function to check for SequelizeValidationError */
 function checkError(error, req, res){
