@@ -10,10 +10,10 @@ function Courses() {
     useEffect(() => {
         axios.get('http://localhost:5000/api/courses')
         .then(data => setData(data.data.courses))
-        .catch(err => console.log('FUCK:', err))
+        .catch(err => console.log('Aye!:', err))
     }, [])
 
-    const courses = data.map(course => <CourseModule data={course} key={course.id}/>)
+    const courses = data.map(course => <CourseModule data={course} url={`http://localhost3000:/courses/${course.id}`} key={course.id}/>)
 
     return(
         <div>
