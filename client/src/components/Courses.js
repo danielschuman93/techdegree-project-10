@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import '../App.css';
+import React, { useState, useEffect, useContext } from 'react';
 import Header from './Header';
 import CourseModule from './CourseModule';
-const axios = require('axios');
+import { Context } from '../Context'
 
 function Courses() {
+    const { actions } = useContext(Context);
+
     const [ data, setData ] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/courses')
-        .then(data => setData(data.data.courses))
-        .catch(err => console.log('Aye!:', err))
+        actions.api('/courses')
+        .then(data => {
+            console.log(data.data);
+            setData(data.data.courses);
+        });
     }, [])
 
-    const courses = data.map(course => <CourseModule data={course} url={`http://localhost3000:/courses/${course.id}`} key={course.id}/>)
+    const courses = data.map(course => <CourseModule data={course} url={`http://localhost:3000/courses/${course.id}`} key={course.id}/>)
 
     return(
         <div>
