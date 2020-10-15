@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
-import CourseModule from './CourseModule';
-const axios = require('axios');
+import { Link } from 'react-router-dom';
 
 function CreateCourse() {
     return(
@@ -46,7 +45,7 @@ function CreateCourse() {
                                 </ul>
                             </div>
                         </div>
-                        <div className="grid-100 pad-bottom"><button className="button" type="submit">Create Course</button><button className="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button></div>
+                        <div className="grid-100 pad-bottom"><button className="button" type="submit">Create Course</button><Link className="button button-secondary" to="/">Cancel</Link></div>
                     </form>
                  </div>
             </div>

@@ -1,11 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = (props) => {
     return (
         <div className="header">
             <div className="bounds">
                 <h1 className="header--logo">Courses</h1>
-                <nav><a className="signup" href="sign-up.html">Sign Up</a><a className="signin" href="sign-in.html">Sign In</a></nav>
+                <nav><Link className="signup" to="/signup">Sign Up</Link><Link className="signin" to="/signin">Sign In</Link></nav>
             </div>
         </div>
     )
