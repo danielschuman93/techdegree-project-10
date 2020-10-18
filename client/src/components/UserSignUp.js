@@ -10,6 +10,7 @@ function UserSignUp() {
     const [ lastName, setLastName ] = useState([]);
     const [ emailAddress, setEmail ] = useState([]);
     const [ password, setPassword ] = useState([]);
+    const [ confirmPassword, setConfirmPassword ] = useState([]);
     const [ errors, setErrors ] = useState([]);
 
     const changeFN = (event) => {
@@ -32,23 +33,36 @@ function UserSignUp() {
         setPassword(value);
     }
 
+    const changeCPW = (event) => {
+        const value = event.target.value;
+        setConfirmPassword(value);
+    }
+
     const submit = (event) => {
         event.preventDefault();
 
-        const user = {
-            firstName,
-            lastName,
-            emailAddress,
-            password
-        };
+        if (password === confirmPassword) {
+            const user = {
+                firstName,
+                lastName,
+                emailAddress,
+                password
+            };
+    
+            actions.createUser(user)
+            .then(errors => {
+                if (errors.length) {
+                    setErrors({ errors })
+                    console.log(errors);
+                } 
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        } else {
+            throw new Error('Your password does not match.');
+        }
 
-        actions.createUser(user)
-        .then(errors => {
-            if (errors.length) {
-                setErrors({ errors })
-                console.log(errors);
-            } 
-        });
     } 
 
     return(
@@ -59,13 +73,13 @@ function UserSignUp() {
                 <div className="grid-33 centered signin">
                     <h1>Sign Up</h1>
                     <div>
-                        <form>
+                        <form onSubmit={submit}>
                             <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" onChange={changeFN}/></div>
                             <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" onChange={changeLN}/></div>
                             <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={changeEmail}/></div>
                             <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={changePW}/></div>
-                            <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password"/></div>
-                            <div className="grid-100 pad-bottom"><button className="button" type="submit" onSubmit={submit}>Sign Up</button><Link className="button button-secondary" to="/">Cancel</Link></div>
+                            <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password" onChange={changeCPW}/></div>
+                            <div className="grid-100 pad-bottom"><button className="button" type="submit">Sign Up</button><Link className="button button-secondary" to="/">Cancel</Link></div>
                         </form>
                     </div>
                     <p>&nbsp;</p>

@@ -9,14 +9,20 @@ export const Provider = (props) => {
     const api = (path, method = 'GET', body = null, requiresAuth = false, credentials = null) => {
         const url = config.apiBaseUrl + path;
 
-        return axios({
+        const options = {
             method,
-            url,
             data: body,
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
               },
-        });
+        }
+
+        if (requiresAuth) {    
+            const encodedCredentials = btoa(`${credentials.username}:${credentials.password}`);
+            options.headers['Authorization'] = `Basic ${encodedCredentials}`;
+        }
+
+        return axios(url, options);
     }
 
     async function getUser(username, password) {
@@ -47,12 +53,23 @@ export const Provider = (props) => {
         }
       }
 
+      const [authUser, setAuthUser] = useState([]);
+      async function signIn(username, password) {
+        const user = await getUser(username, password);
+        if (user !== null) {
+            setAuthUser(user);
+        }
+
+        return user;
+      }
+
     return(
         <Context.Provider value={{
             actions: {
                 api,
                 getUser,
-                createUser
+                createUser,
+                signIn
             }
         }}>
             { props.children }
