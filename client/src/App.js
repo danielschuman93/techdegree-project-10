@@ -7,6 +7,7 @@ import CreateCourse from './components/CreateCourse';
 import UpdateCourse from './components/UpdateCourse';
 import UserSignIn from './components/UserSignIn';
 import UserSignUp from './components/UserSignUp';
+import UserSignOut from './components/UserSignOut';
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
         <Route exact path="/courses/:id" render={() => <CourseDetail/>} />
         <Route path="/signin" render={() => <UserSignIn/>} />
         <Route path="/signup" render={() => <UserSignUp/>} />
-        {/* <Route path="/signout" render={() => <UserSignOut/>} /> */}
+        <Route path="/signout" render={() => <UserSignOut/>} />
       </Switch>
     </BrowserRouter>
   );

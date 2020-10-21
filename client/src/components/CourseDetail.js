@@ -5,7 +5,7 @@ import { Context } from '../Context';
 import { Link } from 'react-router-dom';
 
 function CourseDetail() {
-  const { actions } = useContext(Context);
+  const { actions, authUser } = useContext(Context);
 
   let { id } = useParams();
 

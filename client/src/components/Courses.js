@@ -4,14 +4,14 @@ import CourseModule from './CourseModule';
 import { Context } from '../Context';
 
 function Courses() {
-    const { actions } = useContext(Context);
+    const { actions, authUser } = useContext(Context);
 
     const [ data, setData ] = useState([]);
 
     useEffect(() => {
         actions.api('/courses')
         .then(data => {
-            console.log(data.data);
+            // console.log(data.data);
             setData(data.data.courses);
         });
     }, [])

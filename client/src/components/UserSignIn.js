@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router';
 import Header from './Header';
 import { Link } from 'react-router-dom';
 import { Context } from '../Context';
 
 function UserSignIn(props) {
     const { actions } = useContext(Context);
+    const history = useHistory();
 
     const [ username, setUsername ] = useState([]);
     const [ password, setPassword ] = useState([]);
@@ -30,7 +32,7 @@ function UserSignIn(props) {
                 console.log(errors);
             } else {
                 console.log(`${username} successfully signed in!`)
-                props.history.push('/')
+                history.push('/')
             }
         })
         .catch(err => {

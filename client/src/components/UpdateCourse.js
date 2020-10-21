@@ -1,24 +1,29 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Header from './Header';
+import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useParams } from "react-router";
 import { Context } from '../Context';
 
 
 function UpdateCourse() {
-    const { actions } = useContext(Context);
-
+    const { actions, authUser } = useContext(Context);
+    const history = useHistory();
     let { id } = useParams();
   
     const [ course, setCourse ] = useState([]);
     const [ owner, setOwner ] = useState([]);
   
     useEffect(() => {
-      actions.api(`/courses/${id}`)
-      .then(data => {
-          setCourse(data.data.course);
-          setOwner(data.data.course.owner);
-      });
+        if (!authUser) {
+            history.push('/signin')
+        } else {
+            actions.api(`/courses/${id}`)
+            .then(data => {
+                setCourse(data.data.course);
+                setOwner(data.data.course.owner);
+            });
+        }
     }, [id])
 
     return(
@@ -53,7 +58,7 @@ function UpdateCourse() {
                                 </ul>
                             </div>
                         </div>
-                        <div className="grid-100 pad-bottom"><button className="button" type="submit" onClick={actions.api(`/courses/${id}`, 'PUT')}>Update Course</button><Link className="button button-secondary" to={`/courses/${id}`}>Cancel</Link></div>
+                        <div className="grid-100 pad-bottom"><button className="button" type="submit">Update Course</button><Link className="button button-secondary" to={`/courses/${id}`}>Cancel</Link></div>
                     </form>
                 </div>
             </div>

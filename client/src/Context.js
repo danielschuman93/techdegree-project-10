@@ -5,6 +5,7 @@ const axios = require('axios');
 export const Context = React.createContext();
 
 export const Provider = (props) => {
+    const [authUser, setAuthUser] = useState(null);
 
     const api = (path, method = 'GET', body = null, requiresAuth = false, credentials = null) => {
         const url = config.apiBaseUrl + path;
@@ -28,7 +29,7 @@ export const Provider = (props) => {
     async function getUser(username, password) {
         const response = await api('/users', 'GET', null, true, { username, password });
         if (response.status === 200){
-            return response.then(data => data);
+            return response.data;
         }
         else if (response.status === 401){
             return null;
@@ -51,25 +52,30 @@ export const Provider = (props) => {
         else {
           throw new Error();
         }
-      }
+    }
 
-      const [authUser, setAuthUser] = useState([]);
-      async function signIn(username, password) {
+    async function signIn(username, password) {
         const user = await getUser(username, password);
         if (user !== null) {
-            setAuthUser(user);
+        setAuthUser(user);
         }
 
         return user;
-      }
+    }
+
+    function signOut() {
+        setAuthUser(null);
+    }
 
     return(
         <Context.Provider value={{
+            authUser,
             actions: {
                 api,
                 getUser,
                 createUser,
-                signIn
+                signIn,
+                signOut
             }
         }}>
             { props.children }
