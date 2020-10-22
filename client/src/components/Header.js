@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Context } from '../Context';
 
 const Header = (props) => {
-    const { actions, authUser } = useContext(Context);
+    const { context } = props;
+    const { authUser } = context;
 
     return (
         <div className="header">

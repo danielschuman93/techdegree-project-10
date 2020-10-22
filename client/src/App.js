@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 import './App.css';
+import Header from './components/Header';
 import Courses from './components/Courses';
 import CourseDetail from './components/CourseDetail';
 import CreateCourse from './components/CreateCourse';
@@ -9,19 +10,35 @@ import UserSignIn from './components/UserSignIn';
 import UserSignUp from './components/UserSignUp';
 import UserSignOut from './components/UserSignOut';
 
+import withContext from './Context';
+
+const HeaderWithContext = withContext(Header);
+const CoursesWithContext = withContext(Courses);
+const CourseDetailWithContext = withContext(CourseDetail);
+const CreateCourseWithContext = withContext(CreateCourse);
+const UpdateCourseWithContext = withContext(UpdateCourse);
+const UserSignUpWithContext = withContext(UserSignUp);
+const UserSignInWithContext = withContext(UserSignIn);
+const UserSignOutWithContext = withContext(UserSignOut);
+
 
 function App() {
   return(
     <BrowserRouter>
-      <Switch>
-        <Route exact path="/" render={() => <Courses/>} />
-        <Route path="/courses/create" render={() => <CreateCourse/>} />
-        <Route path="/courses/:id/update" render={() => <UpdateCourse/>} />
-        <Route exact path="/courses/:id" render={() => <CourseDetail/>} />
-        <Route path="/signin" render={() => <UserSignIn/>} />
-        <Route path="/signup" render={() => <UserSignUp/>} />
-        <Route path="/signout" render={() => <UserSignOut/>} />
-      </Switch>
+      <div>
+        <HeaderWithContext />
+
+        <Switch>
+          <Route exact path="/" component={CoursesWithContext} />
+          <Route path="/courses/create" component={CreateCourseWithContext} />
+          <Route path="/courses/:id/update" component={UpdateCourseWithContext} />
+          <Route exact path="/courses/:id" component={CourseDetailWithContext} />
+          <Route path="/signin" component={UserSignInWithContext} />
+          <Route path="/signup" component={UserSignUpWithContext} />
+          <Route path="/signout" component={UserSignOutWithContext} />
+        </Switch>
+      </div>
+
     </BrowserRouter>
   );
 }

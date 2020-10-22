@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { Context } from '../Context';
 
-function UserSignOut() {
-    const { actions, authUser } = useContext(Context);
+function UserSignOut(props) {
+    const { context } = props;
+    const { authUser, actions } = context;
     const history = useHistory();
 
     useEffect(() => {

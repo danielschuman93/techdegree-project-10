@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
-import Header from './Header';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Context } from '../Context';
 
-function UserSignUp() {
-    const { actions } = useContext(Context);
+function UserSignUp(props) {
+    const { context } = props;
+    const { actions } = context;
 
     const [ firstName, setFirstName ] = useState([]);
     const [ lastName, setLastName ] = useState([]);
@@ -66,27 +65,23 @@ function UserSignUp() {
     } 
 
     return(
-        <div>
-            <Header/>
-            <hr/>
-            <div className="bounds">
-                <div className="grid-33 centered signin">
-                    <h1>Sign Up</h1>
-                    <div>
-                        <form onSubmit={submit}>
-                            <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" onChange={changeFN}/></div>
-                            <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" onChange={changeLN}/></div>
-                            <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={changeEmail}/></div>
-                            <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={changePW}/></div>
-                            <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password" onChange={changeCPW}/></div>
-                            <div className="grid-100 pad-bottom"><button className="button" type="submit">Sign Up</button><Link className="button button-secondary" to="/">Cancel</Link></div>
-                        </form>
-                    </div>
-                    <p>&nbsp;</p>
-                    <p>Already have a user account? <Link to="/signin">Click here</Link> to sign in!</p>
+        <div className="bounds">
+            <div className="grid-33 centered signin">
+                <h1>Sign Up</h1>
+                <div>
+                    <form onSubmit={submit}>
+                        <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" onChange={changeFN}/></div>
+                        <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" onChange={changeLN}/></div>
+                        <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={changeEmail}/></div>
+                        <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={changePW}/></div>
+                        <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password" onChange={changeCPW}/></div>
+                        <div className="grid-100 pad-bottom"><button className="button" type="submit">Sign Up</button><Link className="button button-secondary" to="/">Cancel</Link></div>
+                    </form>
                 </div>
-            </div>    
-        </div>
+                <p>&nbsp;</p>
+                <p>Already have a user account? <Link to="/signin">Click here</Link> to sign in!</p>
+            </div>
+        </div>    
     )
 }
 

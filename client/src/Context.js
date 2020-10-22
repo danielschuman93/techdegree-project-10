@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import config from './config';
 const axios = require('axios');
 
 export const Context = React.createContext();
 
-export const Provider = (props) => {
-    const [authUser, setAuthUser] = useState(null);
+export class Provider extends Component {
+    state = {
+        authUser: null
+    };
 
-    const api = (path, method = 'GET', body = null, requiresAuth = false, credentials = null) => {
+    constructor() {
+        super();
+    }
+
+    api = (path, method = 'GET', body = null, requiresAuth = false, credentials = null) => {
         const url = config.apiBaseUrl + path;
 
         const options = {
@@ -26,8 +32,8 @@ export const Provider = (props) => {
         return axios(url, options);
     }
 
-    async function getUser(username, password) {
-        const response = await api('/users', 'GET', null, true, { username, password });
+    async getUser(username, password) {
+        const response = await this.api('/users', 'GET', null, true, { username, password });
         if (response.status === 200){
             return response.data;
         }
@@ -39,8 +45,8 @@ export const Provider = (props) => {
         }
     }
 
-    async function createUser(user) {
-        const response = await api('/users', 'POST', user);
+    async createUser(user) {
+        const response = await this.api('/users', 'POST', user);
         if (response.status === 201) {
           return [];
         }
@@ -54,31 +60,54 @@ export const Provider = (props) => {
         }
     }
 
-    async function signIn(username, password) {
-        const user = await getUser(username, password);
+    signIn = async (username, password) => {
+        const user = await this.getUser(username, password);
         if (user !== null) {
-        setAuthUser(user);
+            this.setState(() => {
+                return {
+                    authUser: user
+                }
+            });
         }
-
         return user;
     }
 
-    function signOut() {
-        setAuthUser(null);
+    signOut = () => {
+        this.setState({authUser: null});
     }
 
-    return(
-        <Context.Provider value={{
-            authUser,
-            actions: {
-                api,
-                getUser,
-                createUser,
-                signIn,
-                signOut
-            }
-        }}>
-            { props.children }
-        </Context.Provider>
-    )
+    render(){
+        return(
+            <Context.Provider value={{
+                authUser: this.state.authUser,
+                actions: {
+                    api: this.api,
+                    getUser: this.getUser,
+                    createUser: this.createUser,
+                    signIn: this.signIn,
+                    signOut: this.signOut
+                }
+            }}>
+                { this.props.children }
+            </Context.Provider>
+        )
+    }
+}
+
+export const Consumer = Context.Consumer;
+
+/**
+ * A higher-order component that wraps the provided component in a Context Consumer component.
+ * @param {class} Component - A React component.
+ * @returns {function} A higher-order component.
+ */
+
+export default function withContext(Component) {
+  return function ContextComponent(props) {
+    return (
+      <Context.Consumer>
+        {context => <Component {...props} context={context} />}
+      </Context.Consumer>
+    );
+  }
 }
