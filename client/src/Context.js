@@ -6,7 +6,8 @@ export const Context = React.createContext();
 
 export class Provider extends Component {
     state = {
-        authUser: null
+        authUser: null,
+        authPassword: null
     };
 
     constructor() {
@@ -65,7 +66,8 @@ export class Provider extends Component {
         if (user !== null) {
             this.setState(() => {
                 return {
-                    authUser: user
+                    authUser: user,
+                    authPassword: password
                 }
             });
         }
@@ -80,6 +82,7 @@ export class Provider extends Component {
         return(
             <Context.Provider value={{
                 authUser: this.state.authUser,
+                authPassword: this.state.authPassword,
                 actions: {
                     api: this.api,
                     getUser: this.getUser,

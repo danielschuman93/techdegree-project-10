@@ -1,9 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 function UserSignUp(props) {
     const { context } = props;
     const { actions } = context;
+    const history = useHistory();
 
     const [ firstName, setFirstName ] = useState([]);
     const [ lastName, setLastName ] = useState([]);
@@ -53,7 +55,12 @@ function UserSignUp(props) {
                 if (errors.length) {
                     setErrors({ errors })
                     console.log(errors);
-                } 
+                } else {
+                    actions.signIn(emailAddress, password)
+                    .then(() => {
+                        history.push('/');
+                    });
+                }
             })
             .catch(err => {
                 console.log(err);

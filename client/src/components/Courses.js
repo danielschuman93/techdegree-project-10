@@ -15,7 +15,7 @@ function Courses(props) {
         });
     }, [])
 
-    const courses = data.map(course => <CourseModule data={course} url={`http://localhost:3000/courses/${course.id}`} key={course.id}/>)
+    const courses = data.map(course => <CourseModule data={course} path={`/courses/${course.id}`} key={course.id}/>)
 
     return(
         <div className="bounds">

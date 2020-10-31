@@ -23,7 +23,7 @@ function CourseDetail(props) {
       <div>
         <div className="actions--bar">
           <div className="bounds">
-            <div className="grid-100"><span><Link className="button" to={`/courses/${course.id}/update`}>Update Course</Link><a className="button" href="#">Delete Course</a></span><a className="button button-secondary" href="/">Return to List</a></div>
+            <div className="grid-100"><span><Link className="button" to={`/courses/${course.id}/update`}>Update Course</Link><a className="button" href="#">Delete Course</a></span><Link className="button button-secondary" to="/">Return to List</Link></div>
           </div>
         </div>
         <div className="bounds course--detail">
