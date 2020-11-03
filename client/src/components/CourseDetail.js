@@ -1,15 +1,29 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from "react-router";
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 function CourseDetail(props) {
   const { context } = props;
-  const { authUser, actions } = context;
+  const { authUser, authPassword, actions } = context;
+  const history = useHistory();
 
   let { id } = useParams();
 
   const [ course, setCourse ] = useState([]);
   const [ owner, setOwner ] = useState([]);
+
+  const deleteCourse = (event) => {
+    event.preventDefault();
+
+    actions.api(`/courses/${id}`, 'DELETE', null, true, { username: authUser.emailAddress, password: authPassword })
+    .then(() => {
+      history.push('/');
+    })
+    .catch(err => {
+      console.log(err.message);
+    })
+  }
 
   useEffect(() => {
     actions.api(`/courses/${id}`)
@@ -23,7 +37,18 @@ function CourseDetail(props) {
       <div>
         <div className="actions--bar">
           <div className="bounds">
-            <div className="grid-100"><span><Link className="button" to={`/courses/${course.id}/update`}>Update Course</Link><a className="button" href="#">Delete Course</a></span><Link className="button button-secondary" to="/">Return to List</Link></div>
+            {authUser && authUser.id === owner.id ?
+              <React.Fragment>
+                <div className="grid-100"><span><Link className="button" to={`/courses/${course.id}/update`}>Update Course</Link>
+                <button className="button" onClick={deleteCourse}>Delete Course</button></span>
+                <Link className="button button-secondary" to="/">Return to List</Link></div>
+              </React.Fragment>
+            :
+            <React.Fragment>
+                <div className="grid-100"><span></span>
+                <Link className="button button-secondary" to="/">Return to List</Link></div>
+            </React.Fragment>
+            }
           </div>
         </div>
         <div className="bounds course--detail">

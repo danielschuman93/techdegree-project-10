@@ -1,7 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
-function CreateCourse() {
+function CreateCourse(props) {
+    const { context } = props;
+    const { authUser, authPassword, actions } = context;
+    const history = useHistory();
+
+    const [ title, setTitle ] = useState('');
+    const [ description, setDescription ] = useState('');
+    const [ estimatedTime, setEstimatedTime ] = useState('');
+    const [ materialsNeeded, setMaterialsNeeded ] = useState('');
+
+    const changeTitle = (event) => {
+        const value = event.target.value;
+        setTitle(value);
+    }
+  
+    const changeDescription = (event) => {
+        const value = event.target.value;
+        setDescription(value);
+    }
+
+    const changeEstimatedTime = (event) => {
+        const value = event.target.value;
+        setEstimatedTime(value);
+    }
+
+    const changeMaterialsNeeded = (event) => {
+        const value = event.target.value;
+        setMaterialsNeeded(value);
+    }
+
+    const submit = (event) => {
+        event.preventDefault();
+
+        const newCourse = {
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded,
+            userId: authUser.id,
+        };
+
+        actions.api(`/courses`, 'POST', newCourse, true, { username: authUser.emailAddress, password: authPassword })
+        .then(() => {
+            history.push(`/`);
+        })
+        .catch(err => {
+            console.log(err.message);
+        });
+    }
+
     return(
         <div className="bounds course--detail">
             <h1>Create Course</h1>
@@ -10,20 +60,19 @@ function CreateCourse() {
                     <h2 className="validation--errors--label">Validation errors</h2>
                     <div className="validation-errors">
                     <ul>
-                        <li>Please provide a value for "Title"</li>
-                        <li>Please provide a value for "Description"</li>
+                     
                     </ul>
                     </div>
                 </div>
-                <form>
+                <form onSubmit={submit}>
                     <div className="grid-66">
                         <div className="course--header">
                             <h4 className="course--label">Course</h4>
-                            <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..." value=""/></div>
+                            <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..." onChange={changeTitle}/></div>
                             <p>By Joe Smith</p>
                         </div>
                         <div className="course--description">
-                            <div><textarea id="description" name="description" className="" placeholder="Course description..."></textarea></div>
+                            <div><textarea id="description" name="description" className="" placeholder="Course description..." onChange={changeDescription}></textarea></div>
                         </div>
                     </div>
                     <div className="grid-25 grid-right">
@@ -31,12 +80,11 @@ function CreateCourse() {
                             <ul className="course--stats--list">
                             <li className="course--stats--list--item">
                                 <h4>Estimated Time</h4>
-                                <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input"
-                                    placeholder="Hours" value=""/></div>
+                                <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" onChange={changeEstimatedTime}/></div>
                             </li>
                             <li className="course--stats--list--item">
                                 <h4>Materials Needed</h4>
-                                <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..."></textarea></div>
+                                <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." onChange={changeMaterialsNeeded}></textarea></div>
                             </li>
                             </ul>
                         </div>

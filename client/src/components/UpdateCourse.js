@@ -54,24 +54,20 @@ function UpdateCourse(props) {
             history.push(`/courses/${id}`);
         })
         .catch(err => {
-            console.log(err);
+            console.log(err.message);
         });
     }
 
     useEffect(() => {
-        if (!authUser) {
-            history.push('/signin')
-        } else {
-            actions.api(`/courses/${id}`)
-            .then(data => {
-                setCourse(data.data.course);
-                setOwner(data.data.course.owner);
-            })
-        }
-        setTitle(course.title);
-        setDescription(course.description);
-        setEstimatedTime(course.estimatedTime);
-        setMaterialsNeeded(course.materialsNeeded);
+        actions.api(`/courses/${id}`)
+        .then(data => {
+            setCourse(data.data.course);
+            setOwner(data.data.course.owner);
+            setTitle(data.data.course.title);
+            setDescription(data.data.course.description);
+            setEstimatedTime(data.data.course.estimatedTime);
+            setMaterialsNeeded(data.data.course.materialsNeeded);
+        }) 
     }, [id])
 
     return(
@@ -86,7 +82,7 @@ function UpdateCourse(props) {
                             <p>By {owner.firstName} {owner.lastName}</p>
                         </div>
                         <div className="course--description">
-                            <div><textarea id="description" name="description" className placeholder="Course description..." defaultValue={course.description} onChange={changeDescription}/></div>
+                            <div><textarea id="description" name="description" className='' placeholder="Course description..." defaultValue={course.description} onChange={changeDescription}/></div>
                         </div>
                         </div>
                         <div className="grid-25 grid-right">
@@ -98,7 +94,7 @@ function UpdateCourse(props) {
                             </li>
                             <li className="course--stats--list--item">
                                 <h4>Materials Needed</h4>
-                                <div><textarea id="materialsNeeded" name="materialsNeeded" className placeholder="List materials..." defaultValue={course.materialsNeeded} onChange={changeMaterialsNeeded}/></div>
+                                <div><textarea id="materialsNeeded" name="materialsNeeded" className='' placeholder="List materials..." defaultValue={course.materialsNeeded} onChange={changeMaterialsNeeded}/></div>
                             </li>
                             </ul>
                         </div>
