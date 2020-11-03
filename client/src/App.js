@@ -27,7 +27,7 @@ function App() {
     <BrowserRouter>
       <div>
         <HeaderWithContext />
-
+        <hr/>
         <Switch>
           <Route exact path="/" component={CoursesWithContext} />
           <PrivateRoute path="/courses/create" component={CreateCourseWithContext} />
