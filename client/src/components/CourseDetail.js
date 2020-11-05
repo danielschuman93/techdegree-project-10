@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from "react-router";
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
+import ReactMarkdown from 'react-markdown';
 
 function CourseDetail(props) {
   const { context } = props;
@@ -59,7 +60,7 @@ function CourseDetail(props) {
               <p>By {owner.firstName} {owner.lastName}</p>
             </div>
             <div className="course--description">
-              <p>{course.description}</p>
+              <ReactMarkdown>{course.description}</ReactMarkdown>
             </div>
           </div>
           <div className="grid-25 grid-right">
@@ -71,9 +72,9 @@ function CourseDetail(props) {
                 </li>
                 <li className="course--stats--list--item">
                   <h4>Materials Needed</h4>
-                  <ul>
+                  <ReactMarkdown>
                     {course.materialsNeeded}
-                  </ul>
+                  </ReactMarkdown>
                 </li>
               </ul>
             </div>

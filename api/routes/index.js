@@ -60,7 +60,7 @@ async function authenticateUser(req, res, next) {
     }
     if (message) {
         console.warn(message);
-        res.status(401).json({ message: 'Access Denied' });
+        res.status(401).json({ errors: [message] });
     } else {
         next();
     }

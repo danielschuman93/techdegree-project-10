@@ -7,11 +7,11 @@ function UserSignUp(props) {
     const { actions } = context;
     const history = useHistory();
 
-    const [ firstName, setFirstName ] = useState([]);
-    const [ lastName, setLastName ] = useState([]);
-    const [ emailAddress, setEmail ] = useState([]);
-    const [ password, setPassword ] = useState([]);
-    const [ confirmPassword, setConfirmPassword ] = useState([]);
+    const [ firstName, setFirstName ] = useState('');
+    const [ lastName, setLastName ] = useState('');
+    const [ emailAddress, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ confirmPassword, setConfirmPassword ] = useState('');
     const [ errors, setErrors ] = useState([]);
 
     const changeFN = (event) => {
@@ -51,22 +51,19 @@ function UserSignUp(props) {
             };
     
             actions.createUser(user)
-            .then(errors => {
-                if (errors.length) {
-                    setErrors({ errors })
-                    console.log(errors);
-                } else {
-                    actions.signIn(emailAddress, password)
-                    .then(() => {
-                        history.push('/');
-                    });
-                }
+            .then(() => {
+                actions.signIn(emailAddress, password)
+                .then(() => {
+                    history.push('/');
+                });
             })
             .catch(err => {
-                console.log(err);
+                const errors = err.response.data.errors.map((err, index) => <li key={index}>{err}</li>);
+                setErrors(errors);
+                console.log(errors);
             });
         } else {
-            throw new Error('Your password does not match.');
+            setErrors([<li>Your password does not match.</li>]);
         }
 
     } 
@@ -76,6 +73,20 @@ function UserSignUp(props) {
             <div className="grid-33 centered signin">
                 <h1>Sign Up</h1>
                 <div>
+                    <div>
+                        {errors.length > 0 ?
+                            <React.Fragment>
+                                <h2 className="validation--errors--label">Validation errors</h2>
+                                <div className="validation-errors">
+                                    <ul>
+                                        {errors}
+                                    </ul>
+                                </div>
+                            </React.Fragment>
+                        :
+                            <span></span>
+                        }
+                    </div>
                     <form onSubmit={submit}>
                         <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" onChange={changeFN}/></div>
                         <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" onChange={changeLN}/></div>

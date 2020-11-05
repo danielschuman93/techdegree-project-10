@@ -7,8 +7,8 @@ function UserSignIn(props) {
     const { authUser, actions } = context;
     const history = useHistory();
 
-    const [ username, setUsername ] = useState([]);
-    const [ password, setPassword ] = useState([]);
+    const [ username, setUsername ] = useState('');
+    const [ password, setPassword ] = useState('');
     const [ errors, setErrors ] = useState([]);
 
     const changeUsername = (event) => {
@@ -27,15 +27,16 @@ function UserSignIn(props) {
         actions.signIn(username, password)
         .then(user => {
             if (user === null) {
-                setErrors(['Sign in was unsuccessful.']);
-                console.log(errors);
+                console.log('Sign in was unsuccessful.');
             } else {
                 console.log(`${username} successfully signed in!`)
                 history.push('/')
             }
         })
         .catch(err => {
-            console.log(err)
+            const errors = err.response.data.errors.map((err, index) => <li key={index}>{err}</li>);
+            setErrors(errors);
+            console.log(errors);
         });
     }
 
@@ -44,6 +45,20 @@ function UserSignIn(props) {
             <div className="grid-33 centered signin">
                 <h1>Sign In</h1>
                 <div>
+                    <div>
+                        {errors.length > 0 ?
+                            <React.Fragment>
+                                <h2 className="validation--errors--label">Validation errors</h2>
+                                <div className="validation-errors">
+                                    <ul>
+                                        {errors}
+                                    </ul>
+                                </div>
+                            </React.Fragment>
+                        :
+                            <span></span>
+                        }
+                    </div>
                     <form onSubmit={submit}>
                         <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={changeUsername}/></div>
                         <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={changePW}/></div>

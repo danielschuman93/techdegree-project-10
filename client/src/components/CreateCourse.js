@@ -11,6 +11,7 @@ function CreateCourse(props) {
     const [ description, setDescription ] = useState('');
     const [ estimatedTime, setEstimatedTime ] = useState('');
     const [ materialsNeeded, setMaterialsNeeded ] = useState('');
+    const [ errors, setErrors ] = useState([]);
 
     const changeTitle = (event) => {
         const value = event.target.value;
@@ -48,7 +49,11 @@ function CreateCourse(props) {
             history.push(`/`);
         })
         .catch(err => {
-            console.log(err.message);
+            if (err.response.data.errors) {
+                const errors = err.response.data.errors.map((err, index) => <li key={index}>{err}</li>);
+                setErrors(errors);
+                console.log(errors);
+            }
         });
     }
 
@@ -57,12 +62,18 @@ function CreateCourse(props) {
             <h1>Create Course</h1>
             <div>
                 <div>
-                    <h2 className="validation--errors--label">Validation errors</h2>
-                    <div className="validation-errors">
-                    <ul>
-                     
-                    </ul>
-                    </div>
+                    {errors.length > 0 ?
+                        <React.Fragment>
+                            <h2 className="validation--errors--label">Validation errors</h2>
+                            <div className="validation-errors">
+                                <ul>
+                                    {errors}
+                                </ul>
+                            </div>
+                        </React.Fragment>
+                    :
+                        <span></span>
+                    }
                 </div>
                 <form onSubmit={submit}>
                     <div className="grid-66">
@@ -91,7 +102,7 @@ function CreateCourse(props) {
                     </div>
                     <div className="grid-100 pad-bottom"><button className="button" type="submit">Create Course</button><Link className="button button-secondary" to="/">Cancel</Link></div>
                 </form>
-                </div>
+            </div>
         </div>
     )
 }

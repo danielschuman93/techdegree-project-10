@@ -16,6 +16,7 @@ function UpdateCourse(props) {
     const [ estimatedTime, setEstimatedTime ] = useState('');
     const [ materialsNeeded, setMaterialsNeeded ] = useState('');
     const [ owner, setOwner ] = useState([]);
+    const [ errors, setErrors ] = useState([]);
 
     const changeTitle = (event) => {
         const value = event.target.value;
@@ -54,7 +55,11 @@ function UpdateCourse(props) {
             history.push(`/courses/${id}`);
         })
         .catch(err => {
-            console.log(err.message);
+            if (err.response.data.errors) {
+                const errors = err.response.data.errors.map((err, index) => <li key={index}>{'Please provide a value for ' + err.param + '.'}</li>);
+                setErrors(errors);
+                console.log(errors);
+            }
         });
     }
 
@@ -74,6 +79,20 @@ function UpdateCourse(props) {
         <div className="bounds course--detail">
             <h1>Update Course</h1>
             <div>
+                <div>
+                    {errors.length > 0 ?
+                        <React.Fragment>
+                            <h2 className="validation--errors--label">Validation errors</h2>
+                            <div className="validation-errors">
+                                <ul>
+                                    {errors}
+                                </ul>
+                            </div>
+                        </React.Fragment>
+                    :
+                        <span></span>
+                    }
+                </div>
                 <form onSubmit={submit}>
                     <div className="grid-66">
                         <div className="course--header">
