@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import CourseModule from './CourseModule';
 import { Link } from 'react-router-dom';
 
 function Courses(props) {
     const { context } = props;
-    const { authUser, actions } = context;
+    const { actions } = context;
 
     const [ data, setData ] = useState([]);
 

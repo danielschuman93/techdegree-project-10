@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
@@ -7,52 +7,35 @@ function UserSignUp(props) {
     const { actions } = context;
     const history = useHistory();
 
-    const [ firstName, setFirstName ] = useState('');
-    const [ lastName, setLastName ] = useState('');
-    const [ emailAddress, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
-    const [ confirmPassword, setConfirmPassword ] = useState('');
+    const [ user, setUser ] = useState({
+        firstName: '',
+        lastName: '',
+        emailAddress: '',
+        password: '',
+        confirmPassword: ''
+    });
     const [ errors, setErrors ] = useState([]);
 
-    const changeFN = (event) => {
+    const change = (event) => {
+        const name = event.target.name;
         const value = event.target.value;
-        setFirstName(value);
-    }
-
-    const changeLN = (event) => {
-        const value = event.target.value;
-        setLastName(value);
-    }
-
-    const changeEmail = (event) => {
-        const value = event.target.value;
-        setEmail(value);
-    }
-
-    const changePW = (event) => {
-        const value = event.target.value;
-        setPassword(value);
-    }
-
-    const changeCPW = (event) => {
-        const value = event.target.value;
-        setConfirmPassword(value);
+        setUser({ ...user, ...{ [name]: value } });
     }
 
     const submit = (event) => {
         event.preventDefault();
 
-        if (password === confirmPassword) {
-            const user = {
-                firstName,
-                lastName,
-                emailAddress,
-                password
+        if (user.password === user.confirmPassword) {
+            const newUser = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                emailAddress: user.emailAddress,
+                password: user.password
             };
     
-            actions.createUser(user)
+            actions.createUser(newUser)
             .then(() => {
-                actions.signIn(emailAddress, password)
+                actions.signIn(user.emailAddress, user.password)
                 .then(() => {
                     history.push('/');
                 });
@@ -88,11 +71,11 @@ function UserSignUp(props) {
                         }
                     </div>
                     <form onSubmit={submit}>
-                        <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" onChange={changeFN}/></div>
-                        <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" onChange={changeLN}/></div>
-                        <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={changeEmail}/></div>
-                        <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={changePW}/></div>
-                        <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password" onChange={changeCPW}/></div>
+                        <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" onChange={change}/></div>
+                        <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" onChange={change}/></div>
+                        <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={change}/></div>
+                        <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={change}/></div>
+                        <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password" onChange={change}/></div>
                         <div className="grid-100 pad-bottom"><button className="button" type="submit">Sign Up</button><Link className="button button-secondary" to="/">Cancel</Link></div>
                     </form>
                 </div>

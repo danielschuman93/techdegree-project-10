@@ -1,35 +1,33 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 
 function UserSignIn(props) {
     const { context } = props;
-    const { authUser, actions } = context;
+    const { actions } = context;
     const history = useHistory();
 
-    const [ username, setUsername ] = useState('');
-    const [ password, setPassword ] = useState('');
+    const [ user, setUser ] = useState({
+        emailAddress: '',
+        password: ''
+    });
     const [ errors, setErrors ] = useState([]);
 
-    const changeUsername = (event) => {
+    const change = (event) => {
+        const name = event.target.name;
         const value = event.target.value;
-        setUsername(value);
-    }
-
-    const changePW = (event) => {
-        const value = event.target.value;
-        setPassword(value);
+        setUser({ ...user, ...{ [name]: value } });
     }
 
     const submit = (event) => {
         event.preventDefault();
 
-        actions.signIn(username, password)
+        actions.signIn(user.emailAddress, user.password)
         .then(user => {
             if (user === null) {
                 console.log('Sign in was unsuccessful.');
             } else {
-                console.log(`${username} successfully signed in!`)
+                console.log(`${user.emailAddress} successfully signed in!`)
                 history.push('/')
             }
         })
@@ -60,8 +58,8 @@ function UserSignIn(props) {
                         }
                     </div>
                     <form onSubmit={submit}>
-                        <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={changeUsername}/></div>
-                        <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={changePW}/></div>
+                        <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={change}/></div>
+                        <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={change}/></div>
                         <div className="grid-100 pad-bottom"><button className="button" type="submit">Sign In</button><Link className="button button-secondary" to="/">Cancel</Link></div>
                     </form>
                 </div>
