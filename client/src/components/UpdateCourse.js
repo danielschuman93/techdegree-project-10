@@ -41,6 +41,8 @@ function UpdateCourse(props) {
                 const errors = err.response.data.errors.map((err, index) => <li key={index}>{'Please provide a value for ' + err.param + '.'}</li>);
                 setErrors(errors);
                 console.log(errors);
+            } else if (err.status === 500) {
+                history.push('/error');
             }
         });
     }
@@ -48,9 +50,20 @@ function UpdateCourse(props) {
     useEffect(() => {
         actions.api(`/courses/${id}`)
         .then(data => {
-            setCourse(data.data.course);
-            setOwner(data.data.course.owner);
-        }) 
+            if (data.data.course === null) {
+                history.push('/notfound');
+            } else if (data.data.course.owner.id !== authUser.id) {
+                history.push('/forbidden');
+            } else {
+                setCourse(data.data.course);
+                setOwner(data.data.course.owner);
+            }
+        })
+        .catch(err =>{
+            if (err.status === 500){
+                history.push('/error');
+            }
+        });
     }, [id])
 
     return(

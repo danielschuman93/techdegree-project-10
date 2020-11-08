@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import CourseModule from './CourseModule';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 function Courses(props) {
     const { context } = props;
     const { actions } = context;
+    const history = useHistory();
 
     const [ data, setData ] = useState([]);
 
@@ -13,6 +15,11 @@ function Courses(props) {
         .then(data => {
             // console.log(data.data);
             setData(data.data.courses);
+        })
+        .catch(err =>{
+            if (err.status === 500){
+                history.push('/error');
+            }
         });
     }, [])
 

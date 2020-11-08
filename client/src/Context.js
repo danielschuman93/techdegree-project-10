@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import config from './config';
+import Cookies from 'js-cookie';
 const axios = require('axios');
 
 export const Context = React.createContext();
 
 export class Provider extends Component {
     state = {
-        authUser: null,
-        authPassword: null
+        authUser: Cookies.getJSON('authUser') || null,
+        authPassword: Cookies.get('authPassword') || null
     };
 
     constructor() {
@@ -70,12 +71,17 @@ export class Provider extends Component {
                     authPassword: password
                 }
             });
+            //Set cookie to expire in 1 day
+            Cookies.set('authUser', JSON.stringify(user), { expires: 1 });
+            Cookies.set('authPassword', password, { expires: 1 });
         }
         return user;
     }
 
     signOut = () => {
         this.setState({authUser: null});
+        Cookies.remove('authUser');
+        Cookies.remove('authPassword');
     }
 
     render(){

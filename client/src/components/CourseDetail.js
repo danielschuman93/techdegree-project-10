@@ -29,8 +29,17 @@ function CourseDetail(props) {
   useEffect(() => {
     actions.api(`/courses/${id}`)
     .then(data => {
+      if (data.data.course === null) {
+        history.push('/notfound');
+      } else {
         setCourse(data.data.course);
         setOwner(data.data.course.owner);
+      }
+    })
+    .catch(err =>{
+      if (err.status === 500){
+        history.push('/error');
+      }
     });
   }, [id])
 
