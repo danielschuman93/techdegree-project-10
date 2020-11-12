@@ -36,8 +36,8 @@ function CourseDetail(props) {
         setOwner(data.data.course.owner);
       }
     })
-    .catch(err =>{
-      if (err.status === 500){
+    .catch(err => {
+      if (err.response.status === 500){
         history.push('/error');
       }
     });

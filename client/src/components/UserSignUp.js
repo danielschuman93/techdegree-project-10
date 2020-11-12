@@ -45,7 +45,7 @@ function UserSignUp(props) {
                     const errors = err.response.data.errors.map((err, index) => <li key={index}>{err}</li>);
                     setErrors(errors);
                     console.log(errors);
-                } else if (err.status === 500) {
+                } else if (err.response.status === 500) {
                     history.push('/error');
                 }
             });
