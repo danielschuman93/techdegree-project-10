@@ -22,7 +22,9 @@ function CourseDetail(props) {
       history.push('/');
     })
     .catch(err => {
-      console.log(err.message);
+      if (err.response.status === 500){
+        history.push('/error');
+      }
     })
   }
 
