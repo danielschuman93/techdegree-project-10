@@ -107,7 +107,7 @@ router.get('/courses', asyncHandler(async(req, res) => {
     res.json({courses});
 }));
 
-// GET COURSES 200: Returns a course (including the user that owns the course) for the provided course ID
+// GET COURSE 200: Returns a course (including the user that owns the course) for the provided course ID
 router.get('/courses/:id', asyncHandler(async(req, res) => {
     const course = await Course.findByPk(req.params.id, {
         attributes: ['id', 'title', 'description', 'estimatedTime', 'materialsNeeded'],

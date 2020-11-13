@@ -16,7 +16,7 @@ function Courses(props) {
             // console.log(data.data);
             setData(data.data.courses);
         })
-        .catch(err =>{
+        .catch(err => {
             if (err.response.status === 500){
                 history.push('/error');
             }
