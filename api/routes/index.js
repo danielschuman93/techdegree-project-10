@@ -9,7 +9,7 @@ const { body, validationResult } = require('express-validator');
 
 /* Function to check for SequelizeValidationError */
 function checkError(error, req, res){
-    if(error.name === 'SequelizeValidationError' || 'SequelizeUniqueConstraintError'){
+    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError'){
         console.log(error);
       const errors = error.errors.map(err => err.message);
       console.error('Validation errors: ', errors);
@@ -29,8 +29,7 @@ function asyncHandler(cb){
         if (checkError(error, req, res)) {
           return;
         } else {
-          next();  
-          throw error;
+          next(error);
         }
       }
     }
