@@ -5,15 +5,18 @@ import { useHistory } from 'react-router';
 import ReactMarkdown from 'react-markdown';
 
 function CourseDetail(props) {
+  // get context from props, get state from context
   const { context } = props;
   const { authUser, authPassword, actions } = context;
+  // create history object
   const history = useHistory();
-
+  // get id param
   let { id } = useParams();
-
+  // create stateful variables
   const [ course, setCourse ] = useState([]);
   const [ owner, setOwner ] = useState([]);
 
+  // deleteCourse function makes a call to the api to delete the course with the matching id param from the database
   const deleteCourse = (event) => {
     event.preventDefault();
 
@@ -21,6 +24,7 @@ function CourseDetail(props) {
     .then(() => {
       history.push('/');
     })
+    // if api responds with a 500 status code, redirect to '/error' route
     .catch(err => {
       if (err.response.status === 500){
         history.push('/error');
@@ -28,8 +32,10 @@ function CourseDetail(props) {
     })
   }
 
+  // When component mounts, retrieve course data with the matching id param and save it in state
   useEffect(() => {
     actions.api(`/courses/${id}`)
+    // if api returns null, redirect to '/notfound` route
     .then(data => {
       if (data.data.course === null) {
         history.push('/notfound');
@@ -38,6 +44,7 @@ function CourseDetail(props) {
         setOwner(data.data.course.owner);
       }
     })
+    // if api responds with a 500 status code, redirect to '/error' route
     .catch(err => {
       if (err.response.status === 500){
         history.push('/error');

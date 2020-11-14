@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
 function UserSignUp(props) {
+    // get context from props, get state from context
     const { context } = props;
     const { actions } = context;
+    // create history object
     const history = useHistory();
-
+    // create stateful variables
     const [ user, setUser ] = useState({
         firstName: '',
         lastName: '',
@@ -16,15 +18,18 @@ function UserSignUp(props) {
     });
     const [ errors, setErrors ] = useState([]);
 
+    // change function modifies values in state based on input form values with the corresponding name
     const change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         setUser({ ...user, ...{ [name]: value } });
     }
 
+    // submit function calls createUser function from context to create the new user in the database
     const submit = (event) => {
         event.preventDefault();
-
+        // if password matches confirm password, create new user object with data saved in state and continue
+        // else set errors state to 'password does not match'
         if (user.password === user.confirmPassword) {
             const newUser = {
                 firstName: user.firstName,
@@ -32,14 +37,17 @@ function UserSignUp(props) {
                 emailAddress: user.emailAddress,
                 password: user.password
             };
-    
+            // pass new user object to createUser function 
             actions.createUser(newUser)
+            // then sign in the new user and redirect to homepage
             .then(() => {
                 actions.signIn(user.emailAddress, user.password)
                 .then(() => {
                     history.push('/');
                 });
             })
+            // if api returns errors array, save errors in state as an array of list items
+            // else if api responds with a 500 status code, redirect to '/error' route
             .catch(err => {
                 if (err.response.data.errors){
                     const errors = err.response.data.errors.map((err, index) => <li key={index}>{err}</li>);

@@ -5,24 +5,29 @@ import { useParams } from "react-router";
 
 
 function UpdateCourse(props) {
+    // get context from props, get state from context
     const { context } = props;
     const { authUser, authPassword, actions } = context;
+    // create history object
     const history = useHistory();
+    // get id param
     let { id } = useParams();
-  
+    // create stateful variables
     const [ course, setCourse ] = useState([]);
     const [ owner, setOwner ] = useState([]);
     const [ errors, setErrors ] = useState([]);
 
+    // change function modifies values in state based on input form values with the corresponding name
     const change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         setCourse({ ...course, ...{ [name]: value } });
     }
 
+    // submit function uses course object saved in state to make a call to the api to update the course with the matching id param 
     const submit = (event) => {
         event.preventDefault();
-
+        // use state to create new updatedCourse object
         const updatedCourse = {
             id,
             title: course.title,
@@ -31,11 +36,14 @@ function UpdateCourse(props) {
             materialsNeeded: course.materialsNeeded,
             userId: authUser.id,
         };
-
+        // PUT request to api 
         actions.api(`/courses/${id}`, 'PUT', updatedCourse, true, { username: authUser.emailAddress, password: authPassword })
+        // redirect to course details page of updated course
         .then(() => {
             history.push(`/courses/${id}`);
         })
+        // if api returns errors array, save errors in state as an array of list items
+        // else if api responds with a 500 status code, redirect to '/error' route
         .catch(err => {
             if (err.response.data.errors) {
                 const errors = err.response.data.errors.map((err, index) => <li key={index}>{'Please provide a value for ' + err.param + '.'}</li>);
@@ -47,8 +55,11 @@ function UpdateCourse(props) {
         });
     }
 
+    // When component mounts, retrieve course data with the matching id param and save it in state
     useEffect(() => {
         actions.api(`/courses/${id}`)
+        // if api returns null, redirect to '/notfound` route
+        // else if owner id retrieved from course data does not match owner id saved in state redirect to '/forbidden' route
         .then(data => {
             if (data.data.course === null) {
                 history.push('/notfound');
@@ -59,6 +70,7 @@ function UpdateCourse(props) {
                 setOwner(data.data.course.owner);
             }
         })
+        // if api responds with a 500 status code, redirect to '/error' route
         .catch(err =>{
             if (err.status === 500){
                 history.push('/error');

@@ -3,27 +3,33 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 
 function UserSignIn(props) {
+    // get context from props, get state from context
     const { context } = props;
-    const { from } = props.location.state || { from: { pathname: '/' } };
     const { actions } = context;
+    // set from variable to either the url path saved in state or homepage path
+    const { from } = props.location.state || { from: { pathname: '/' } };
+    // create history object
     const history = useHistory();
-
+    // create stateful variables
     const [ user, setUser ] = useState({
         emailAddress: '',
         password: ''
     });
     const [ errors, setErrors ] = useState([]);
 
+    // change function modifies values in state based on input form values with the corresponding name
     const change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         setUser({ ...user, ...{ [name]: value } });
     }
 
+    // submit function calls signIn function from context 
     const submit = (event) => {
         event.preventDefault();
-
+        // signIn function takes in user credentials saved in state
         actions.signIn(user.emailAddress, user.password)
+        // if sign in is successful, redirect to path saved in from variable 
         .then(user => {
             if (user === null) {
                 console.log('Sign in was unsuccessful.');
@@ -32,6 +38,8 @@ function UserSignIn(props) {
                 history.push(from);
             }
         })
+        // if api returns errors array, save errors in state as an array of list items
+        // else if api responds with a 500 status code, redirect to '/error' route
         .catch(err => {
             if (err.response.data.errors){
                 const errors = err.response.data.errors.map((err, index) => <li key={index}>{err}</li>);

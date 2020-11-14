@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
 function CreateCourse(props) {
+    // get context from props, get state from context
     const { context } = props;
     const { authUser, authPassword, actions } = context;
+    // create history object
     const history = useHistory();
-
+    // create stateful variables
     const [ course, setCourse ] = useState({
         title: '',
         description: '',
@@ -15,15 +17,17 @@ function CreateCourse(props) {
     });
     const [ errors, setErrors ] = useState([]);
 
+    // change function modifies values in state based on input form values with the corresponding name
     const change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         setCourse({ ...course, ...{ [name]: value } });
     }
 
+    // submit function uses course object saved in state to make a call to the api to create the new course in the database
     const submit = (event) => {
         event.preventDefault();
-
+        // use values saved in state to create new course object
         const newCourse = {
             title: course.title,
             description: course.description,
@@ -31,11 +35,14 @@ function CreateCourse(props) {
             materialsNeeded: course.materialsNeeded,
             userId: authUser.id,
         };
-
+        // POST request to api
         actions.api(`/courses`, 'POST', newCourse, true, { username: authUser.emailAddress, password: authPassword })
+        // then redirect to homepage
         .then(() => {
             history.push(`/`);
         })
+        // if api returns errors array, save errors in state as an array of list items
+        // else if api responds with a 500 status code, redirect to '/error' route
         .catch(err => {
             if (err.response.data.errors) {
                 const errors = err.response.data.errors.map((err, index) => <li key={index}>{err}</li>);

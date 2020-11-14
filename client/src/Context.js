@@ -6,6 +6,7 @@ const axios = require('axios');
 export const Context = React.createContext();
 
 export class Provider extends Component {
+    // initialize state of authorized user and password from cookies or null
     state = {
         authUser: Cookies.getJSON('authUser') || null,
         authPassword: Cookies.get('authPassword') || null
@@ -14,7 +15,7 @@ export class Provider extends Component {
     constructor() {
         super();
     }
-
+    // api method takes in parameters and returns an axios call to the api
     api = (path, method = 'GET', body = null, requiresAuth = false, credentials = null) => {
         const url = config.apiBaseUrl + path;
 
@@ -25,7 +26,7 @@ export class Provider extends Component {
                 'Content-Type': 'application/json; charset=utf-8',
               },
         }
-
+        // if requiresAuth is true, encode the user's username and password and add the Authorization header to the api call
         if (requiresAuth) {    
             const encodedCredentials = btoa(`${credentials.username}:${credentials.password}`);
             options.headers['Authorization'] = `Basic ${encodedCredentials}`;
@@ -34,6 +35,7 @@ export class Provider extends Component {
         return axios(url, options);
     }
 
+    // getUser function takes in a username a password, makes a call to the api, and returns any matching user data
     async getUser(username, password) {
         const response = await this.api('/users', 'GET', null, true, { username, password });
         if (response.status === 200){
@@ -47,6 +49,7 @@ export class Provider extends Component {
         }
     }
 
+    // createUser function takes in user data and makes a call to the api to create the user in the database
     async createUser(user) {
         const response = await this.api('/users', 'POST', user);
         if (response.status === 201) {
@@ -62,6 +65,7 @@ export class Provider extends Component {
         }
     }
 
+    // signIn function takes in a username and password, if user exists sets authUser and authPassword state to the username and password
     signIn = async (username, password) => {
         const user = await this.getUser(username, password);
         if (user !== null) {
@@ -71,15 +75,16 @@ export class Provider extends Component {
                     authPassword: password
                 }
             });
-            //Set cookie to expire in 1 day
+            // Set cookies to expire in 1 day
             Cookies.set('authUser', JSON.stringify(user), { expires: 1 });
             Cookies.set('authPassword', password, { expires: 1 });
         }
         return user;
     }
 
+    // signOut function sets authUser and authPassword state to null and removes cookies
     signOut = () => {
-        this.setState({authUser: null});
+        this.setState({authUser: null, authPassword: null});
         Cookies.remove('authUser');
         Cookies.remove('authPassword');
     }

@@ -4,18 +4,21 @@ import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
 function Courses(props) {
+    // get context from props, get authUser state from context
     const { context } = props;
     const { actions } = context;
+    // create history object
     const history = useHistory();
-
+    // create stateful data variable
     const [ data, setData ] = useState([]);
 
+    // When component mounts retrieve courses data from api and save it in state
     useEffect(() => {
         actions.api('/courses')
         .then(data => {
-            // console.log(data.data);
             setData(data.data.courses);
         })
+        // if api responds with a 500 status code, redirect to '/error' route
         .catch(err => {
             if (err.response.status === 500){
                 history.push('/error');
@@ -23,6 +26,7 @@ function Courses(props) {
         });
     }, [])
 
+    // create variable to hold CourseModule array
     const courses = data.map(course => <CourseModule data={course} path={`/courses/${course.id}`} key={course.id}/>)
 
     return(
